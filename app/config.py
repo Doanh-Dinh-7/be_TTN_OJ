@@ -9,11 +9,12 @@ _backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(_backend_dir, ".env"))
 
 
-def _ensure_supabase_ssl(url: str) -> str:
-    """Supabase yêu cầu SSL. Thêm sslmode=require nếu chưa có."""
-    if "supabase" not in url.lower():
-        return url
+def _ensure_cloud_ssl(url: str) -> str:
+    """Neon và các Postgres cloud yêu cầu SSL. Thêm sslmode=require nếu chưa có (trừ localhost)."""
     parsed = urlparse(url)
+    hostname = (parsed.hostname or "").lower()
+    if hostname in ("localhost", "127.0.0.1", ""):
+        return url
     query = parse_qs(parsed.query)
     if "sslmode" in query:
         return url
@@ -30,7 +31,7 @@ class Config(BaseSettings):
     env: str = "development"
     debug: bool = False
 
-    # Database (PostgreSQL) - dùng Supabase: paste Connection string từ Dashboard
+    # Database (PostgreSQL) - Neon hoặc local: paste Connection string từ Neon Dashboard
     database_url: str = "postgresql://postgres:postgres@localhost:5432/ttn_oj"
 
     # JWT (access token 24h, refresh token dài hơn để gia hạn)
@@ -71,9 +72,9 @@ class Config(BaseSettings):
 
 
 def get_config() -> Config:
-    """Load config from environment. Supabase: set DATABASE_URL từ Dashboard."""
+    """Load config from environment. Neon: set DATABASE_URL từ Dashboard."""
     database_url = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/ttn_oj")
-    database_url = _ensure_supabase_ssl(database_url)
+    database_url = _ensure_cloud_ssl(database_url)
     return Config(
         secret_key=os.getenv("SECRET_KEY", "dev-secret-change-in-production"),
         jwt_secret_key=os.getenv("JWT_SECRET_KEY", os.getenv("SECRET_KEY", "jwt-secret")),
