@@ -1,7 +1,11 @@
 """JWT and RBAC. Password hashing with bcrypt."""
+from datetime import timedelta
+
 import bcrypt
 from flask_jwt_extended import (
     create_access_token,
+    create_refresh_token,
+    decode_token,
     get_jwt_identity,
     get_jwt,
     verify_jwt_in_request,
@@ -9,8 +13,12 @@ from flask_jwt_extended import (
 from flask_jwt_extended import JWTManager
 from functools import wraps
 from uuid import UUID
+
 from app import db
 from app.models import User, Role
+
+# Claim type cho token xác thực email (phân biệt với access token)
+VERIFY_EMAIL_CLAIM = "verify_email"
 
 
 def init_jwt(app) -> None:
@@ -33,11 +41,36 @@ def check_password(password: str, password_hash: str) -> bool:
 
 
 def create_token(user_id: UUID, role_name: str) -> str:
-    """Create JWT access token with identity and role."""
+    """Create JWT access token (24h) with identity and role."""
     return create_access_token(
         identity=str(user_id),
         additional_claims={"role": role_name},
     )
+
+
+def create_refresh_token_for_user(user_id: UUID) -> str:
+    """Create JWT refresh token (dài hạn, dùng để lấy access token mới)."""
+    return create_refresh_token(identity=str(user_id))
+
+
+def create_verify_email_token(user_id: UUID) -> str:
+    """Tạo JWT token cho xác thực email, hết hạn sau 15 phút. Ký bằng JWT secret."""
+    return create_access_token(
+        identity=str(user_id),
+        additional_claims={"type": VERIFY_EMAIL_CLAIM},
+        expires_delta=timedelta(minutes=15),
+    )
+
+
+def decode_verify_email_token(token: str) -> UUID | None:
+    """Giải mã token xác thực email. Trả về user_id nếu hợp lệ, None nếu hết hạn/sai."""
+    try:
+        decoded = decode_token(token)
+        if decoded.get("type") != VERIFY_EMAIL_CLAIM:
+            return None
+        return UUID(decoded["sub"])
+    except Exception:
+        return None
 
 
 def get_current_user_id() -> UUID:

@@ -1,17 +1,21 @@
 """Auth request/response schemas."""
 from uuid import UUID
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 
 class RegisterRequest(BaseModel):
     email: EmailStr
-    password: str
     username: str
+    password: str = Field(..., min_length=8, description="Ít nhất 8 ký tự")
+
+
+class VerifyEmailRequest(BaseModel):
+    token: str
 
 
 class TokenResponse(BaseModel):

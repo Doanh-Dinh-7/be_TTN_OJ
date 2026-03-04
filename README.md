@@ -36,7 +36,8 @@ flask db migrate -m "Initial"
 flask db upgrade
 ```
 
-Tạo roles: `python scripts/create_roles.py`
+Tạo roles: `python scripts/create_roles.py`  
+Tạo tài khoản ADMIN (email: admin@ttnoj.local, password: 12341234): `python scripts/create_admin.py`
 
 ## Run
 

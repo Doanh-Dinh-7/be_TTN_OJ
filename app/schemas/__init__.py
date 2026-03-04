@@ -1,5 +1,5 @@
 """Pydantic schemas for request/response validation."""
-from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse
+from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse, VerifyEmailRequest
 from app.schemas.contest import ContestCreate, ContestResponse, ContestListResponse
 from app.schemas.problem import ProblemCreate, ProblemResponse, TestCaseCreate
 from app.schemas.submission import SubmissionCreate, SubmissionResponse
