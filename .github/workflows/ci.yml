@@ -1,0 +1,54 @@
+# TTN OJ Backend - CI
+# Chạy khi push / pull_request vào main (hoặc branch mặc định).
+name: Backend CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Ruff check
+        run: ruff check .
+
+      - name: Ruff format check
+        run: ruff format --check .
+
+  install:
+    name: Install & smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Verify app loads
+        run: python -c "from app import create_app; create_app()"
+        env:
+          SECRET_KEY: ci-secret-key-min-32-chars-long
+          JWT_SECRET_KEY: ci-jwt-secret-key-min-32-chars
+          DATABASE_URL: postgresql://u:p@localhost/dummy?sslmode=require
+          REDIS_URL: redis://localhost:6379/0
+          CELERY_BROKER_URL: redis://localhost:6379/0
+          CELERY_RESULT_BACKEND: redis://localhost:6379/0

@@ -2,6 +2,8 @@
 
 Backend và Frontend là **hai repo Git riêng**. Repo này chỉ chứa backend; deploy lên **Render** (Web Service) và **Fly.io** (Judge Worker).
 
+**CI:** GitHub Actions chạy tại `.github/workflows/ci.yml` (lint với Ruff, kiểm tra cài đặt và load app).
+
 Stack:
 - **Backend API:** Render Web Service
 - **Judge Worker:** Fly.io (Celery + Docker-in-Docker)
