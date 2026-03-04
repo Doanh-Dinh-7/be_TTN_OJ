@@ -1,0 +1,26 @@
+# Fly.io Judge Worker - đổi tên thành fly.toml khi deploy: cp fly.toml.example fly.toml
+# Chạy từ root repo backend: fly launch (lần đầu), fly deploy (các lần sau)
+# Judge cần Docker-in-Docker (DinD); khuyến nghị memory >= 1GB.
+
+app = "ttn-oj-judge"
+
+[build]
+  dockerfile = "Dockerfile.judge"
+
+[env]
+  # Set bằng fly secrets set DATABASE_URL=... (hoặc trong Dashboard)
+  # DATABASE_URL = ""
+  # REDIS_URL = ""
+  # CELERY_BROKER_URL = ""
+  # CELERY_RESULT_BACKEND = ""
+  # SECRET_KEY = ""
+  # JWT_SECRET_KEY = ""
+
+[vm]
+  size = "shared-cpu-1x"
+  memory = "1gb"
+
+# Worker không expose HTTP; không cần [http_service]
+# Nếu Fly bắt buộc process, dùng:
+# [processes]
+#   worker = "/start_judge.sh"

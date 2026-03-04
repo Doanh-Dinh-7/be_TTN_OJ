@@ -1,0 +1,28 @@
+# TTN OJ Backend - Render Web Service
+# Repo này là backend-only: root của repo = root của app (không dùng rootDir).
+# Kết nối Render với repo backend → Render dùng file này.
+services:
+  - type: web
+    name: ttn-oj-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt --no-cache-dir
+    startCommand: gunicorn -w 2 -b 0.0.0.0:$PORT run:app
+    envVars:
+      - key: PORT
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: CELERY_BROKER_URL
+        sync: false
+      - key: CELERY_RESULT_BACKEND
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false

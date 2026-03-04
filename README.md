@@ -7,7 +7,7 @@ Flask REST API. Clean Architecture: Controller → Service → Repository → Mo
 ```bash
 python -m venv .venv
 .venv\Scripts\activate   # Windows
-pip install -r requirements.txt
+pip install -r requirements.txt --no-cache-dir
 cp .example.env .env     # edit .env với secrets
 ```
 
@@ -33,3 +33,7 @@ Tạo tài khoản ADMIN (email: admin@ttnoj.local, password: 12341234): `python
 - Celery worker (judge): `celery -A app.celery_app:celery_app worker -l info`
 
 Requires Redis and PostgreSQL (see docker-compose in project root).
+
+## Deploy (backend + frontend là hai repo riêng)
+
+Xem [DEPLOY.md](DEPLOY.md) để deploy Backend lên Render + Judge lên Fly.io (Neon, Render Redis / Upstash).

@@ -1,0 +1,24 @@
+# Judge worker for Fly.io: Celery + Docker-in-Docker to run user code in containers.
+# Build from backend dir: docker build -f Dockerfile.judge -t ttn-oj-judge .
+# Fly: from repo root use: fly deploy --dockerfile backend/Dockerfile.judge --build-arg (context = root then use Dockerfile at fly-judge context below)
+FROM python:3.12-slim
+
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+
+# Install Docker (for Docker-in-Docker) and build deps for psycopg2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev \
+    docker.io \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+COPY scripts/start_judge.sh /start_judge.sh
+RUN chmod +x /start_judge.sh
+
+# Run as root so dockerd can start (required for DinD)
+CMD ["/start_judge.sh"]
