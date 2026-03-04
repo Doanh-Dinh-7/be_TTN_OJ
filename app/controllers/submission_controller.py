@@ -1,16 +1,20 @@
 """Submission API. Rate limited. Enqueue only; judge in worker."""
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+
 from uuid import UUID
+
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+
+from app import limiter
 from app.services.submission_service import SubmissionService
 from app.utils.auth import user_required
-from app import limiter
 
 submission_bp = Blueprint("submissions", __name__)
 
 
 def _enqueue_judge(submission_id: str) -> None:
     from app.tasks.judge_task import judge_submission_task  # lazy to avoid circular import
+
     judge_submission_task.delay(submission_id)
 
 

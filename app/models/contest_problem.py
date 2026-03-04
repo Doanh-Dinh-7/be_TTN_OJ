@@ -1,8 +1,10 @@
 """ContestProblem: problem assigned to contest (order, max_score)."""
-from sqlalchemy import Column, Integer, ForeignKey
+
+from sqlalchemy import Column, Integer
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+
 from app import db
+from app.models.base import BaseModel
 
 
 class ContestProblem(BaseModel):

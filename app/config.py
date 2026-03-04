@@ -1,8 +1,10 @@
 """Application configuration. All secrets from environment."""
+
 import os
-from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
-from pydantic_settings import BaseSettings
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+
 from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
 
 # Load .env vào os.environ (tìm từ thư mục backend) để script và flask CLI dùng đúng DATABASE_URL
 _backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -82,8 +84,12 @@ def get_config() -> Config:
         jwt_refresh_expires=int(os.getenv("JWT_REFRESH_EXPIRES", "604800")),
         database_url=database_url,
         redis_url=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
-        celery_broker_url=os.getenv("CELERY_BROKER_URL", os.getenv("REDIS_URL", "redis://localhost:6379/0")),
-        celery_result_backend=os.getenv("CELERY_RESULT_BACKEND", os.getenv("REDIS_URL", "redis://localhost:6379/0")),
+        celery_broker_url=os.getenv(
+            "CELERY_BROKER_URL", os.getenv("REDIS_URL", "redis://localhost:6379/0")
+        ),
+        celery_result_backend=os.getenv(
+            "CELERY_RESULT_BACKEND", os.getenv("REDIS_URL", "redis://localhost:6379/0")
+        ),
         mail_server=os.getenv("MAIL_SERVER", "localhost"),
         mail_port=int(os.getenv("MAIL_PORT", "587")),
         mail_use_tls=os.getenv("MAIL_USE_TLS", "true").lower() in ("1", "true", "yes"),

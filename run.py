@@ -1,5 +1,7 @@
 """Run Flask app. Do not run judge here; use Celery worker."""
+
 import os
+
 from app import create_app
 
 app = create_app()

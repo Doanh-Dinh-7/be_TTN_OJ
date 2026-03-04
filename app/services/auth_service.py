@@ -1,14 +1,15 @@
 """Auth business logic: register, login, verify email. No DB in controller."""
+
 from app import db
 from app.repositories.user_repository import UserRepository
 from app.services.email_service import send_verification_email
 from app.utils.auth import (
-    hash_password,
     check_password,
-    create_token,
     create_refresh_token_for_user,
+    create_token,
     create_verify_email_token,
     decode_verify_email_token,
+    hash_password,
 )
 
 
@@ -50,6 +51,7 @@ class AuthService:
     def refresh(user_id_str: str) -> tuple[dict | None, str | None]:
         """Tạo access token mới từ refresh token (identity = user_id)."""
         from uuid import UUID
+
         try:
             user_id = UUID(user_id_str)
         except ValueError:

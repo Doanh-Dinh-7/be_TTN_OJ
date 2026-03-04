@@ -1,7 +1,9 @@
 """Submission repository. Never delete submission history."""
+
 from uuid import UUID
+
 from app import db
-from app.models import Submission, SubmissionStatus, SubmissionResult, UserContestScore
+from app.models import Submission, SubmissionResult, SubmissionStatus, UserContestScore
 
 
 class SubmissionRepository:
@@ -10,7 +12,9 @@ class SubmissionRepository:
         return db.session.get(Submission, submission_id)
 
     @staticmethod
-    def create(user_id: UUID, contest_id: UUID, problem_id: UUID, code: str, language: str) -> Submission:
+    def create(
+        user_id: UUID, contest_id: UUID, problem_id: UUID, code: str, language: str
+    ) -> Submission:
         s = Submission(
             user_id=user_id,
             contest_id=contest_id,
@@ -24,7 +28,9 @@ class SubmissionRepository:
         return s
 
     @staticmethod
-    def list_by_user_contest(user_id: UUID, contest_id: UUID, problem_id: UUID | None = None) -> list[Submission]:
+    def list_by_user_contest(
+        user_id: UUID, contest_id: UUID, problem_id: UUID | None = None
+    ) -> list[Submission]:
         q = db.session.query(Submission).filter(
             Submission.user_id == user_id,
             Submission.contest_id == contest_id,
@@ -41,9 +47,17 @@ class SubmissionRepository:
             s.score = score
 
     @staticmethod
-    def add_result(submission_id: UUID, test_case_id: UUID, order_index: int, status: SubmissionStatus,
-                   score: int, output: str | None, error_message: str | None, time_ms: int | None,
-                   memory_mb: float | None) -> SubmissionResult:
+    def add_result(
+        submission_id: UUID,
+        test_case_id: UUID,
+        order_index: int,
+        status: SubmissionStatus,
+        score: int,
+        output: str | None,
+        error_message: str | None,
+        time_ms: int | None,
+        memory_mb: float | None,
+    ) -> SubmissionResult:
         r = SubmissionResult(
             submission_id=submission_id,
             test_case_id=test_case_id,
@@ -60,9 +74,9 @@ class SubmissionRepository:
         return r
 
     @staticmethod
-    def upsert_user_contest_score(user_id: UUID, contest_id: UUID, problem_id: UUID,
-                                  best_score: int, best_submission_id: UUID) -> None:
-        from app.models import UserContestScore
+    def upsert_user_contest_score(
+        user_id: UUID, contest_id: UUID, problem_id: UUID, best_score: int, best_submission_id: UUID
+    ) -> None:
         row = (
             db.session.query(UserContestScore)
             .filter(

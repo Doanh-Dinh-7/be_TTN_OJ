@@ -1,7 +1,9 @@
 """Problem and test case repository."""
+
 from uuid import UUID
+
 from app import db
-from app.models import Problem, TestCase, ContestProblem
+from app.models import ContestProblem, Problem, TestCase
 
 
 class ProblemRepository:
@@ -19,8 +21,14 @@ class ProblemRepository:
         )
 
     @staticmethod
-    def create(title: str, description: str, max_score: int, time_limit_ms: int,
-               memory_limit_mb: int, language_allowed: str) -> Problem:
+    def create(
+        title: str,
+        description: str,
+        max_score: int,
+        time_limit_ms: int,
+        memory_limit_mb: int,
+        language_allowed: str,
+    ) -> Problem:
         p = Problem(
             title=title,
             description=description,
@@ -34,8 +42,13 @@ class ProblemRepository:
         return p
 
     @staticmethod
-    def add_test_case(problem_id: UUID, input_data: str | None, expected_output: str,
-                     is_sample: bool, order_index: int) -> TestCase:
+    def add_test_case(
+        problem_id: UUID,
+        input_data: str | None,
+        expected_output: str,
+        is_sample: bool,
+        order_index: int,
+    ) -> TestCase:
         tc = TestCase(
             problem_id=problem_id,
             input_data=input_data,

@@ -1,6 +1,8 @@
 """Base model: UUID PK, UTC timestamps, soft delete support."""
+
 import uuid
 from datetime import datetime, timezone
+
 from sqlalchemy import Column, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 

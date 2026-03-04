@@ -1,6 +1,8 @@
 """Contest business logic. Contest config cannot change after start."""
+
 from datetime import datetime, timezone
 from uuid import UUID
+
 from app.repositories.contest_repository import ContestRepository
 from app.repositories.problem_repository import ProblemRepository
 
@@ -40,8 +42,14 @@ class ContestService:
         ]
 
     @staticmethod
-    def create_contest(name: str, description: str | None, start_time: datetime, end_time: datetime,
-                      is_public: bool, leaderboard_hidden: bool) -> dict:
+    def create_contest(
+        name: str,
+        description: str | None,
+        start_time: datetime,
+        end_time: datetime,
+        is_public: bool,
+        leaderboard_hidden: bool,
+    ) -> dict:
         c = ContestRepository.create(
             name, description, start_time, end_time, is_public, leaderboard_hidden
         )
@@ -59,12 +67,14 @@ class ContestService:
         for cp in cps:
             p = ProblemRepository.get_by_id(cp.problem_id)
             if p and not p.deleted_at:
-                out.append({
-                    "id": str(p.id),
-                    "title": p.title,
-                    "order_index": cp.order_index,
-                    "max_score": cp.max_score,
-                })
+                out.append(
+                    {
+                        "id": str(p.id),
+                        "title": p.title,
+                        "order_index": cp.order_index,
+                        "max_score": cp.max_score,
+                    }
+                )
         return out
 
     @staticmethod

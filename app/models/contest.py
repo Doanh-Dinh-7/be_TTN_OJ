@@ -1,8 +1,9 @@
 """Contest model. Configuration cannot change after start."""
-from sqlalchemy import Column, String, DateTime, Boolean, Text
+
+from sqlalchemy import Boolean, Column, DateTime, String, Text
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel, utc_now
-from app import db
+
+from app.models.base import BaseModel
 
 
 class Contest(BaseModel):

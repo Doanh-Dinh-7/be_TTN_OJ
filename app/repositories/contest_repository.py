@@ -1,6 +1,8 @@
 """Contest repository: DB access only."""
+
 from datetime import datetime, timezone
 from uuid import UUID
+
 from app import db
 from app.models import Contest, ContestProblem
 
@@ -16,7 +18,7 @@ class ContestRepository:
         return (
             db.session.query(Contest)
             .filter(
-                Contest.is_public == True,
+                Contest.is_public,
                 Contest.deleted_at.is_(None),
                 Contest.start_time <= now,
                 Contest.end_time >= now,
@@ -37,8 +39,14 @@ class ContestRepository:
         )
 
     @staticmethod
-    def create(name: str, description: str | None, start_time: datetime, end_time: datetime,
-               is_public: bool, leaderboard_hidden: bool) -> Contest:
+    def create(
+        name: str,
+        description: str | None,
+        start_time: datetime,
+        end_time: datetime,
+        is_public: bool,
+        leaderboard_hidden: bool,
+    ) -> Contest:
         c = Contest(
             name=name,
             description=description,

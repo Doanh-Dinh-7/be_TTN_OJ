@@ -1,9 +1,11 @@
 """Auth API: login, register, verify email, refresh. No business logic here."""
-from flask import Blueprint, request, jsonify
+
+from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.services.auth_service import AuthService
-from app.utils.auth import admin_required, user_required, get_current_user
+
 from app.schemas.auth import LoginRequest, RegisterRequest, VerifyEmailRequest
+from app.services.auth_service import AuthService
+from app.utils.auth import get_current_user, user_required
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -50,7 +52,7 @@ def login():
 @auth_bp.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
-    """Gửi refresh token trong Authorization: Bearer <refresh_token>, nhận access_token mới (24h)."""
+    """Gửi refresh token (Authorization: Bearer <refresh_token>), nhận access_token mới (24h)."""
     identity = get_jwt_identity()
     result, err = AuthService.refresh(identity)
     if err:
@@ -71,10 +73,12 @@ def me():
     user = get_current_user()
     if not user:
         return jsonify({"message": "Not found"}), 404
-    return jsonify({
-        "id": str(user.id),
-        "email": user.email,
-        "username": user.username,
-        "verified": user.verified,
-        "role_id": str(user.role_id),
-    }), 200
+    return jsonify(
+        {
+            "id": str(user.id),
+            "email": user.email,
+            "username": user.username,
+            "verified": user.verified,
+            "role_id": str(user.role_id),
+        }
+    ), 200

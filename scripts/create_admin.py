@@ -1,11 +1,12 @@
-"""Tạo tài khoản ADMIN (email: raymondpython07@gmail.com, password: 12341234). Chạy sau create_roles.py."""
+"""Tạo tài khoản ADMIN. Chạy sau create_roles.py. Email/password xem biến bên dưới."""
+
 import sys
 
 sys.path.insert(0, ".")
 from app import create_app, db
-from app.models import Role, User
-from app.utils.auth import hash_password
+from app.models import Role
 from app.repositories.user_repository import UserRepository
+from app.utils.auth import hash_password
 
 ADMIN_EMAIL = "raymondpython07@gmail.com"
 ADMIN_USERNAME = "ADMIN"

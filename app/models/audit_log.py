@@ -1,7 +1,9 @@
 """AuditLog for suspicious activity and admin actions."""
-from sqlalchemy import Column, String, Text, ForeignKey
-from app.models.base import BaseModel
+
+from sqlalchemy import Column, String, Text
+
 from app import db
+from app.models.base import BaseModel
 
 
 class AuditLog(BaseModel):

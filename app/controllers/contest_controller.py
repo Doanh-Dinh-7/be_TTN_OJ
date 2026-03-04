@@ -1,8 +1,11 @@
 """Contest API. No DB or business logic in routes."""
-from flask import Blueprint, request, jsonify
-from app.services.contest_service import ContestService
-from app.utils.auth import user_required, admin_required
+
 from uuid import UUID
+
+from flask import Blueprint, jsonify, request
+
+from app.services.contest_service import ContestService
+from app.utils.auth import admin_required
 
 contest_bp = Blueprint("contests", __name__)
 
@@ -45,7 +48,8 @@ def create_contest():
     name = data.get("name")
     if not name:
         return jsonify({"message": "name required"}), 400
-    from datetime import datetime, timezone
+    from datetime import datetime
+
     try:
         start_time = datetime.fromisoformat(data.get("start_time", "").replace("Z", "+00:00"))
         end_time = datetime.fromisoformat(data.get("end_time", "").replace("Z", "+00:00"))

@@ -1,21 +1,22 @@
 """JWT and RBAC. Password hashing with bcrypt."""
-from datetime import timedelta
 
-import bcrypt
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    decode_token,
-    get_jwt_identity,
-    get_jwt,
-    verify_jwt_in_request,
-)
-from flask_jwt_extended import JWTManager
+from datetime import timedelta
 from functools import wraps
 from uuid import UUID
 
+import bcrypt
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    get_jwt,
+    get_jwt_identity,
+    verify_jwt_in_request,
+)
+
 from app import db
-from app.models import User, Role
+from app.models import User
 
 # Claim type cho token xác thực email (phân biệt với access token)
 VERIFY_EMAIL_CLAIM = "verify_email"
@@ -88,6 +89,7 @@ def get_current_user() -> User | None:
 
 def require_role(*allowed_roles: str):
     """Decorator: require JWT and one of allowed roles (RBAC)."""
+
     def wrapper(fn):
         @wraps(fn)
         def inner(*args, **kwargs):
@@ -97,7 +99,9 @@ def require_role(*allowed_roles: str):
             if role not in allowed_roles:
                 return {"message": "Forbidden"}, 403
             return fn(*args, **kwargs)
+
         return inner
+
     return wrapper
 
 

@@ -34,6 +34,32 @@ Tạo tài khoản ADMIN (email: admin@ttnoj.local, password: 12341234): `python
 
 Requires Redis and PostgreSQL (see docker-compose in project root).
 
+## Check trước khi push (giống CI)
+
+Chạy trong thư mục gốc repo backend (đã activate venv nếu dùng):
+
+```bash
+# 1. Lint (Ruff)
+pip install ruff
+ruff check .
+ruff format --check .
+
+# 2. Cài đặt + kiểm tra app load được (không cần DB/Redis thật)
+pip install -r requirements.txt
+set SECRET_KEY=ci-secret-key-min-32-chars-long
+set JWT_SECRET_KEY=ci-jwt-secret-key-min-32-chars
+set DATABASE_URL=postgresql://u:p@localhost/dummy?sslmode=require
+set REDIS_URL=redis://localhost:6379/0
+set CELERY_BROKER_URL=redis://localhost:6379/0
+set CELERY_RESULT_BACKEND=redis://localhost:6379/0
+python -c "from app import create_app; create_app()"
+```
+
+- **Linux/macOS:** thay `set VAR=value` bằng `export VAR=value`.
+- **PowerShell:** dùng `$env:SECRET_KEY = "ci-secret-key-min-32-chars-long"` (và tương tự các biến khác).
+
+Nếu tất cả lệnh trên chạy xong không lỗi thì CI trên GitHub thường cũng pass.
+
 ## Deploy (backend + frontend là hai repo riêng)
 
 Xem [DEPLOY.md](DEPLOY.md) để deploy Backend lên Render + Judge lên Fly.io (Neon, Render Redis / Upstash).

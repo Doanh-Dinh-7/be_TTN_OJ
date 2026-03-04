@@ -1,13 +1,15 @@
 """Flask app factory. Clean Architecture: controllers use services, services use repositories."""
+
 import hashlib
 import os
 from datetime import timedelta
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 from app.config import get_config
 
@@ -30,7 +32,9 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     app.config["SECRET_KEY"] = config.secret_key
     app.config["SQLALCHEMY_DATABASE_URI"] = config.database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["JWT_SECRET_KEY"] = _ensure_jwt_key_length(config.jwt_secret_key or "default-change-me")
+    app.config["JWT_SECRET_KEY"] = _ensure_jwt_key_length(
+        config.jwt_secret_key or "default-change-me"
+    )
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=config.jwt_access_expires)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=config.jwt_refresh_expires)
     app.config["JWT_ALGORITHM"] = config.jwt_algorithm
@@ -45,6 +49,7 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     limiter.init_app(app)
 
     from app.controllers import register_blueprints
+
     register_blueprints(app)
 
     return app

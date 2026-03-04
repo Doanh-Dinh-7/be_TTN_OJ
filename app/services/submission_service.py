@@ -1,10 +1,10 @@
 """Submission business logic. API enqueue only; judge runs in worker."""
+
 from uuid import UUID
+
 from app import db
-from app.repositories.submission_repository import SubmissionRepository
 from app.repositories.problem_repository import ProblemRepository
-from app.repositories.contest_repository import ContestRepository
-from app.utils.auth import get_current_user
+from app.repositories.submission_repository import SubmissionRepository
 from app.services.contest_service import ContestService
 
 
@@ -25,8 +25,14 @@ class SubmissionService:
         return True, ""
 
     @staticmethod
-    def create_submission(user_id: UUID, contest_id: UUID, problem_id: UUID, code: str,
-                          language: str, enqueue_judge_fn) -> tuple[dict | None, str | None]:
+    def create_submission(
+        user_id: UUID,
+        contest_id: UUID,
+        problem_id: UUID,
+        code: str,
+        language: str,
+        enqueue_judge_fn,
+    ) -> tuple[dict | None, str | None]:
         ok, err = SubmissionService.can_submit(user_id, contest_id)
         if not ok:
             return None, err
@@ -52,7 +58,9 @@ class SubmissionService:
         }, None
 
     @staticmethod
-    def get_submission(submission_id: UUID, user_id: UUID | None, admin: bool = False) -> dict | None:
+    def get_submission(
+        submission_id: UUID, user_id: UUID | None, admin: bool = False
+    ) -> dict | None:
         s = SubmissionRepository.get_by_id(submission_id)
         if not s:
             return None

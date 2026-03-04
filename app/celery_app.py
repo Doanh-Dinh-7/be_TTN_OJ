@@ -1,5 +1,7 @@
 """Celery app. Broker and result backend from config."""
+
 from celery import Celery
+
 from app.config import get_config
 
 

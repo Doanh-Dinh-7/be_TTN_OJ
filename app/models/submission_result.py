@@ -1,9 +1,11 @@
 """SubmissionResult: per-test-case result. Used for score calculation."""
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Enum
+
+from sqlalchemy import Column, Integer, Text
 from sqlalchemy.orm import relationship
+
+from app import db
 from app.models.base import BaseModel
 from app.models.submission import SubmissionStatus
-from app import db
 
 
 class SubmissionResult(BaseModel):

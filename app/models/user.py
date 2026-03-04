@@ -1,8 +1,10 @@
 """User model. Password hashed with bcrypt."""
-from sqlalchemy import Column, String, Boolean, ForeignKey
+
+from sqlalchemy import Boolean, Column, String
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+
 from app import db
+from app.models.base import BaseModel
 
 
 class User(BaseModel):

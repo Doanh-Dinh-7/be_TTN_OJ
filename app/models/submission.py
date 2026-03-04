@@ -1,10 +1,12 @@
 """Submission model. Never delete submission history."""
-from sqlalchemy import Column, Text, String, Integer, ForeignKey, Enum
-from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
-from app import db
 
 import enum
+
+from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.orm import relationship
+
+from app import db
+from app.models.base import BaseModel
 
 
 class SubmissionStatus(str, enum.Enum):
@@ -43,4 +45,6 @@ class Submission(BaseModel):
     user = relationship("User", backref="submissions")
     contest = relationship("Contest", backref="submissions")
     problem = relationship("Problem", backref="submissions")
-    results = relationship("SubmissionResult", back_populates="submission", order_by="SubmissionResult.order_index")
+    results = relationship(
+        "SubmissionResult", back_populates="submission", order_by="SubmissionResult.order_index"
+    )

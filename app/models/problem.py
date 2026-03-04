@@ -1,8 +1,9 @@
 """Problem model. Must have test cases and max_score before contest assign."""
-from sqlalchemy import Column, String, Integer, Text, Boolean, DateTime
+
+from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import relationship
+
 from app.models.base import BaseModel
-from app import db
 
 
 class Problem(BaseModel):

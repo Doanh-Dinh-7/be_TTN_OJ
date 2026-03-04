@@ -1,5 +1,7 @@
 """Create default roles (admin, user). Run once after db upgrade."""
+
 import sys
+
 sys.path.insert(0, ".")
 from app import create_app, db
 from app.models import Role

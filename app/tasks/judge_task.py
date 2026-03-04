@@ -3,10 +3,9 @@ Judge task: run in Celery worker. Execute in isolated Docker only.
 Flow: API -> Queue -> Worker -> Docker -> Update DB.
 Never run user code directly on server.
 """
+
+from app import create_app, db
 from app.celery_app import celery_app
-from app import db
-from flask import Flask
-from app import create_app
 
 
 @celery_app.task(bind=True)
@@ -15,10 +14,11 @@ def judge_submission_task(self, submission_id: str):
     app = create_app()
     with app.app_context():
         from uuid import UUID
-        from app.models import Submission, SubmissionStatus, SubmissionResult
-        from app.repositories.submission_repository import SubmissionRepository
-        from app.repositories.problem_repository import ProblemRepository
+
         from app.judge.docker_runner import run_judge
+        from app.models import SubmissionStatus
+        from app.repositories.problem_repository import ProblemRepository
+        from app.repositories.submission_repository import SubmissionRepository
 
         sid = UUID(submission_id)
         submission = SubmissionRepository.get_by_id(sid)
@@ -39,7 +39,12 @@ def judge_submission_task(self, submission_id: str):
         time_limit_ms = problem.time_limit_ms
         memory_limit_mb = problem.memory_limit_mb
         tc_payload = [
-            {"id": str(tc.id), "input": tc.input_data or "", "expected": tc.expected_output, "order": tc.order_index}
+            {
+                "id": str(tc.id),
+                "input": tc.input_data or "",
+                "expected": tc.expected_output,
+                "order": tc.order_index,
+            }
             for tc in test_cases
         ]
         results = run_judge(
@@ -52,9 +57,14 @@ def judge_submission_task(self, submission_id: str):
         passed = sum(1 for r in results if r.get("status") == "accepted")
         total = len(results)
         score = int((passed / total) * max_score) if total else 0
-        status = SubmissionStatus.ACCEPTED if passed == total else (
-            SubmissionStatus.WRONG_ANSWER if results and results[0].get("status") != "compilation_error"
-            else SubmissionStatus.COMPILATION_ERROR
+        status = (
+            SubmissionStatus.ACCEPTED
+            if passed == total
+            else (
+                SubmissionStatus.WRONG_ANSWER
+                if results and results[0].get("status") != "compilation_error"
+                else SubmissionStatus.COMPILATION_ERROR
+            )
         )
         for i, r in enumerate(results):
             st = r.get("status", "runtime_error")
@@ -69,7 +79,9 @@ def judge_submission_task(self, submission_id: str):
             else:
                 sr_status = SubmissionStatus.RUNTIME_ERROR
             tc = test_cases[i] if i < len(test_cases) else None
-            tc_id = tc.id if tc else (UUID(r.get("test_case_id")) if r.get("test_case_id") else None)
+            tc_id = (
+                tc.id if tc else (UUID(r.get("test_case_id")) if r.get("test_case_id") else None)
+            )
             if not tc_id:
                 continue
             SubmissionRepository.add_result(

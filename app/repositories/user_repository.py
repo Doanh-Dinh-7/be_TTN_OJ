@@ -1,7 +1,9 @@
 """User repository: DB access only."""
+
 from uuid import UUID
+
 from app import db
-from app.models import User, Role
+from app.models import Role, User
 
 
 class UserRepository:

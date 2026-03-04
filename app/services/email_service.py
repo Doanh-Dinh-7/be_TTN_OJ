@@ -1,7 +1,8 @@
 """Gửi email xác thực. Dùng smtplib (stdlib)."""
+
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from app.config import get_config
 
@@ -18,7 +19,8 @@ def send_verification_email(to_email: str, full_name: str, verify_token: str) ->
     subject = "Xác thực email - TTN OJ"
     body = f"""Xin chào {full_name},
 
-Bạn đã đăng ký tài khoản tại TTN OJ. Vui lòng xác thực email bằng cách truy cập link sau (hết hạn sau 15 phút):
+Bạn đã đăng ký tài khoản tại TTN OJ.
+Vui lòng xác thực email bằng link sau (hết hạn 15 phút):
 
 {link}
 
@@ -46,7 +48,9 @@ TechTonic Online Judge
         return True
     except smtplib.SMTPAuthenticationError as e:
         print(f"[Email] Gửi thất bại (xác thực SMTP lỗi): {e}")
-        print("[Email] Gmail: dùng App Password thay vì mật khẩu đăng nhập: https://support.google.com/accounts/answer/185833")
+        print(
+            "[Email] Gmail: dùng App Password thay vì mật khẩu đăng nhập: https://support.google.com/accounts/answer/185833"
+        )
         return False
     except Exception as e:
         print(f"[Email] Failed to send verification to {to_email}: {e}")

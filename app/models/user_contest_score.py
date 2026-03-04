@@ -1,8 +1,9 @@
 """Highest score per problem per user per contest for leaderboard optimization."""
-from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+
+from sqlalchemy import Column, Integer, UniqueConstraint
+
 from app import db
+from app.models.base import BaseModel
 
 
 class UserContestScore(BaseModel):

@@ -1,8 +1,10 @@
 """TestCase model. Problem must have test cases before contest assign."""
-from sqlalchemy import Column, Text, ForeignKey, Boolean
+
+from sqlalchemy import Boolean, Column, Text
 from sqlalchemy.orm import relationship
-from app.models.base import BaseModel
+
 from app import db
+from app.models.base import BaseModel
 
 
 class TestCase(BaseModel):
