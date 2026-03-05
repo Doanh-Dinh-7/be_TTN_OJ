@@ -2,15 +2,17 @@
 
 from app import db
 from app.repositories.user_repository import UserRepository
-from app.services.email_service import send_verification_email
 from app.utils.auth import (
     check_password,
     create_refresh_token_for_user,
     create_token,
-    create_verify_email_token,
+    # create_verify_email_token,
     decode_verify_email_token,
     hash_password,
 )
+
+# from app.services.email_service import send_verification_email
+# from app.tasks.email_task import send_verification_email_task
 
 
 class AuthService:
@@ -22,10 +24,17 @@ class AuthService:
             return {}, "Username already taken"
         password_hash = hash_password(password)
         role_name = "user"
-        user = UserRepository.create(email, password_hash, username, role_name)
+        # user = UserRepository.create(email, password_hash, username, role_name)
+        UserRepository.create(email, password_hash, username, role_name)
         db.session.commit()
+        # Note: tạm thời không gửi email xác thực
+        '''
         verify_token = create_verify_email_token(user.id)
-        send_verification_email(email, username, verify_token)
+        try:
+            send_verification_email_task.delay(email, username, verify_token)
+        except Exception:
+            send_verification_email(email, username, verify_token)
+        '''
         return {"message": "Đăng ký thành công. Vui lòng xác thực email."}, None
 
     @staticmethod

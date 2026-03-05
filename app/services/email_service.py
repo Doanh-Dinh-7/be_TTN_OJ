@@ -1,10 +1,13 @@
 """Gửi email xác thực. Dùng smtplib (stdlib)."""
 
+import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from app.config import get_config
+
+logger = logging.getLogger(__name__)
 
 
 def send_verification_email(to_email: str, full_name: str, verify_token: str) -> bool:
@@ -35,8 +38,14 @@ TechTonic Online Judge
     msg.attach(MIMEText(body, "plain", "utf-8"))
 
     if not config.mail_username or not config.mail_password:
-        # Dev: không cấu hình SMTP thì chỉ in link ra console
-        print(f"[DEV] Verification link for {to_email}: {link}")
+        logger.warning(
+            (
+                "Mail chưa cấu hình: set MAIL_SERVER, MAIL_USERNAME, MAIL_PASSWORD "
+                "(và MAIL_PORT, MAIL_USE_TLS) trên server. "
+                "Verification link (dev): %s"
+            ),
+        link
+        )
         return True
 
     try:
@@ -47,11 +56,8 @@ TechTonic Online Judge
             server.send_message(msg)
         return True
     except smtplib.SMTPAuthenticationError as e:
-        print(f"[Email] Gửi thất bại (xác thực SMTP lỗi): {e}")
-        print(
-            "[Email] Gmail: dùng App Password thay vì mật khẩu đăng nhập: https://support.google.com/accounts/answer/185833"
-        )
+        logger.error("Gửi email thất bại (xác thực SMTP): %s. Gmail: dùng App Password.", e)
         return False
     except Exception as e:
-        print(f"[Email] Failed to send verification to {to_email}: {e}")
+        logger.exception("Failed to send verification to %s: %s", to_email, e)
         return False

@@ -29,7 +29,7 @@ class UserRepository:
             password_hash=password_hash,
             username=username,
             role_id=role.id,
-            verified=False,
+            verified=True, #Note: tạm thời để True để test
         )
         db.session.add(user)
         db.session.flush()

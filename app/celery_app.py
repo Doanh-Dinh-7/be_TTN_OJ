@@ -11,7 +11,7 @@ def make_celery() -> Celery:
         "ttn_oj",
         broker=config.celery_broker_url,
         backend=config.celery_result_backend,
-        include=["app.tasks.judge_task"],
+        include=["app.tasks.judge_task", "app.tasks.email_task"],
     )
     celery.conf.update(
         task_serializer="json",
