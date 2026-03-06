@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
+from app import db
 from app.repositories.contest_repository import ContestRepository
 from app.repositories.problem_repository import ProblemRepository
 
@@ -53,6 +54,7 @@ class ContestService:
         c = ContestRepository.create(
             name, description, start_time, end_time, is_public, leaderboard_hidden
         )
+        db.session.commit()
         return {
             "id": str(c.id),
             "name": c.name,

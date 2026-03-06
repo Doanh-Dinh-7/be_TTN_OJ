@@ -87,8 +87,19 @@ def get_current_user() -> User | None:
     return db.session.get(User, UUID(uid))
 
 
+def require_auth(fn):
+    """Decorator: require valid JWT (requireAuth). Token giả mạo → 401."""
+
+    @wraps(fn)
+    def inner(*args, **kwargs):
+        verify_jwt_in_request()
+        return fn(*args, **kwargs)
+
+    return inner
+
+
 def require_role(*allowed_roles: str):
-    """Decorator: require JWT and one of allowed roles (RBAC)."""
+    """Decorator: require JWT and one of allowed roles (RBAC). User gọi API admin → 403."""
 
     def wrapper(fn):
         @wraps(fn)
@@ -106,7 +117,7 @@ def require_role(*allowed_roles: str):
 
 
 def admin_required(fn):
-    """Require Admin role."""
+    """Require Admin role (requireRole('admin'))."""
     return require_role("admin")(fn)
 
 

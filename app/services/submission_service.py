@@ -88,3 +88,21 @@ class SubmissionService:
             }
             for s in items
         ]
+
+    @staticmethod
+    def list_all_submissions(
+        skip: int = 0, limit: int = 100, contest_id: UUID | None = None
+    ) -> list[dict]:
+        items = SubmissionRepository.list_all(skip=skip, limit=limit, contest_id=contest_id)
+        return [
+            {
+                "id": str(s.id),
+                "user_id": str(s.user_id),
+                "contest_id": str(s.contest_id),
+                "problem_id": str(s.problem_id),
+                "status": s.status.value,
+                "score": s.score,
+                "created_at": s.created_at.isoformat(),
+            }
+            for s in items
+        ]

@@ -44,7 +44,7 @@ TechTonic Online Judge
                 "(và MAIL_PORT, MAIL_USE_TLS) trên server. "
                 "Verification link (dev): %s"
             ),
-        link
+            link,
         )
         return True
 

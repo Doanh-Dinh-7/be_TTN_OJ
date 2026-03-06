@@ -3,6 +3,7 @@
 from uuid import UUID
 
 from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 
 from app.services.contest_service import ContestService
 from app.utils.auth import admin_required
@@ -15,6 +16,10 @@ def list_contests():
     admin = request.args.get("admin") == "1"
     skip = int(request.args.get("skip", 0))
     limit = min(int(request.args.get("limit", 50)), 100)
+    if admin:
+        verify_jwt_in_request()
+        if get_jwt().get("role") != "admin":
+            return jsonify({"message": "Forbidden"}), 403
     items = ContestService.list_contests(admin=admin, skip=skip, limit=limit)
     return jsonify({"contests": items}), 200
 

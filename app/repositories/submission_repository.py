@@ -28,6 +28,15 @@ class SubmissionRepository:
         return s
 
     @staticmethod
+    def list_all(
+        skip: int = 0, limit: int = 100, contest_id: UUID | None = None
+    ) -> list[Submission]:
+        q = db.session.query(Submission)
+        if contest_id is not None:
+            q = q.filter(Submission.contest_id == contest_id)
+        return q.order_by(Submission.created_at.desc()).offset(skip).limit(limit).all()
+
+    @staticmethod
     def list_by_user_contest(
         user_id: UUID, contest_id: UUID, problem_id: UUID | None = None
     ) -> list[Submission]:

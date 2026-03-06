@@ -80,5 +80,6 @@ def me():
             "username": user.username,
             "verified": user.verified,
             "role_id": str(user.role_id),
+            "role": user.role.name,
         }
     ), 200

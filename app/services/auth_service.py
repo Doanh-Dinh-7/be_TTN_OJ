@@ -28,13 +28,13 @@ class AuthService:
         UserRepository.create(email, password_hash, username, role_name)
         db.session.commit()
         # Note: tạm thời không gửi email xác thực
-        '''
+        """
         verify_token = create_verify_email_token(user.id)
         try:
             send_verification_email_task.delay(email, username, verify_token)
         except Exception:
             send_verification_email(email, username, verify_token)
-        '''
+        """
         return {"message": "Đăng ký thành công. Vui lòng xác thực email."}, None
 
     @staticmethod
