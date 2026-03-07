@@ -38,6 +38,7 @@ def create_app(config_overrides: dict | None = None) -> Flask:
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(seconds=config.jwt_access_expires)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(seconds=config.jwt_refresh_expires)
     app.config["JWT_ALGORITHM"] = config.jwt_algorithm
+    app.config["TEST_CASE_UPLOAD_FOLDER"] = getattr(config, "test_case_upload_folder", "test_cases")
     if config_overrides:
         app.config.update(config_overrides)
 

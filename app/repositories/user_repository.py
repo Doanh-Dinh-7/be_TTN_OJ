@@ -2,6 +2,8 @@
 
 from uuid import UUID
 
+from sqlalchemy import or_
+
 from app import db
 from app.models import Role, User
 
@@ -54,6 +56,35 @@ class UserRepository:
         return (
             db.session.query(User).order_by(User.created_at.desc()).offset(skip).limit(limit).all()
         )
+
+    @staticmethod
+    def list_users_filtered(
+        skip: int = 0,
+        limit: int = 50,
+        status: str | None = None,
+        role: str | None = None,
+        verified: bool | None = None,
+        keyword: str | None = None,
+    ) -> list[User]:
+        """Danh sách user có lọc."""
+        q = db.session.query(User)
+        if status == "locked":
+            q = q.filter(User.banned.is_(True))
+        elif status == "active":
+            q = q.filter(User.banned.is_(False))
+        if role and role.strip().lower() in ("admin", "user"):
+            q = q.join(Role).filter(Role.name == role.strip().lower())
+        if verified is not None:
+            q = q.filter(User.verified.is_(verified))
+        if keyword and keyword.strip():
+            term = f"%{keyword.strip()}%"
+            q = q.filter(
+                or_(
+                    User.username.ilike(term),
+                    User.email.ilike(term),
+                )
+            )
+        return q.order_by(User.created_at.desc()).offset(skip).limit(limit).all()
 
     @staticmethod
     def update_banned(user_id: UUID, banned: bool) -> bool:

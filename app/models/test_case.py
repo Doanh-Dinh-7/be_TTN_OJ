@@ -17,6 +17,8 @@ class TestCase(BaseModel):
     )
     input_data = Column(Text, nullable=True)
     expected_output = Column(Text, nullable=False)
+    input_path = Column(Text, nullable=True)
+    output_path = Column(Text, nullable=True)
     is_sample = Column(Boolean, default=False, nullable=False)
     order_index = Column(db.Integer, default=0, nullable=False)
 

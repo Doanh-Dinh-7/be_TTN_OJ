@@ -57,6 +57,9 @@ class Config(BaseSettings):
     # Rate limit (submission API)
     submission_rate_limit: str = "10 per minute"
 
+    # Test case file upload (relative to instance folder or absolute path)
+    test_case_upload_folder: str = "test_cases"
+
     # Mail (xác thực email)
     mail_server: str = "localhost"
     mail_port: int = 587

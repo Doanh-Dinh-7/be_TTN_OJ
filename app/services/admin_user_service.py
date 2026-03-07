@@ -11,12 +11,23 @@ from app.repositories.user_repository import UserRepository
 
 class AdminUserService:
     @staticmethod
-    def list_users(skip: int = 0, limit: int = 50) -> list[dict]:
-        """
-        Danh sách user cho Admin.
-        Trả về id, email, username, verified, role name, locked (banned).
-        """
-        users = UserRepository.list_users(skip=skip, limit=limit)
+    def list_users(
+        skip: int = 0,
+        limit: int = 50,
+        status: str | None = None,
+        role: str | None = None,
+        verified: bool | None = None,
+        keyword: str | None = None,
+    ) -> list[dict]:
+        """Danh sách user cho Admin."""
+        users = UserRepository.list_users_filtered(
+            skip=skip,
+            limit=limit,
+            status=status,
+            role=role,
+            verified=verified,
+            keyword=keyword,
+        )
         return [
             {
                 "id": str(u.id),

@@ -3,7 +3,7 @@
 from app.models.audit_log import AuditLog
 from app.models.contest import Contest
 from app.models.contest_problem import ContestProblem
-from app.models.problem import Problem
+from app.models.problem import Problem, ProblemStatus
 from app.models.role import Role
 from app.models.submission import Submission, SubmissionStatus
 from app.models.submission_result import SubmissionResult
@@ -16,6 +16,7 @@ __all__ = [
     "User",
     "Contest",
     "Problem",
+    "ProblemStatus",
     "TestCase",
     "ContestProblem",
     "Submission",
